@@ -1,0 +1,28 @@
+﻿# Arquivos de build
+bin/
+obj/
+*.csproj.user
+*.suo
+
+# Visual Studio
+.vs/
+*.user
+*.userosscache
+
+# NuGet
+packages/
+*.nupkg
+*.snupkg
+
+# Logs
+*.log
+*.cache
+
+# Arquivos sensíveis (NUNCA versionar)
+appsettings.Development.json
+appsettings.Production.json
+appsettings.json
+secrets.json
+
+NoteTakingAPI.csproj
+NoteTakingAPI.csproj.user
