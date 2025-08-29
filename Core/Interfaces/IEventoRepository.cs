@@ -7,7 +7,7 @@ namespace NoteTakingAPI.Core.Interfaces
         Task<Evento?> GetByIdAsync(int id);
         Task<IEnumerable<Evento>> GetAllAsync();
         Task<Evento> InserOrUpdateAsync(Evento evento);
-        Task DeleteAsync(int id);
+        Task <Boolean> DeleteAsync(int id);
         Task<bool> SaveChangesAsync();
 
     }

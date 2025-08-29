@@ -46,14 +46,17 @@ namespace NoteTakingAPI.Infrastructure.Repositories
             return evento;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<Boolean> DeleteAsync(int id)
         {
-            var pessoa = await GetByIdAsync(id);
-            if (pessoa != null)
+            var evento = await GetByIdAsync(id);
+            if (evento != null)
             {
-                _context.Eventos.Remove(pessoa);
+                _context.Eventos.Remove(evento);
                 await _context.SaveChangesAsync();
+                return true;
             }
+
+            return false;
         }
 
         public async Task<bool> SaveChangesAsync()

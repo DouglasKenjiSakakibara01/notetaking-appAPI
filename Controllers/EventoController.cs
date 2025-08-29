@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NoteTakingAPI.Core.Entities;
 using NoteTakingAPI.Core.Interfaces;
+using NoteTakingAPI.Services;
 
 namespace NoteTakingAPI.Controllers
 {
@@ -8,12 +9,12 @@ namespace NoteTakingAPI.Controllers
     [Route("api/[controller]")]
     public class EventoController: ControllerBase
     {
-        private readonly IEventoRepository _eventoRepository;
+        private readonly EventoService _eventoService;
         private readonly ILogger<EventoController> _logger;
 
-        public EventoController(IEventoRepository eventoRepository, ILogger<EventoController> logger)
+        public EventoController(EventoService eventoService, ILogger<EventoController> logger)
         {
-            _eventoRepository = eventoRepository;
+            _eventoService = eventoService;
             _logger = logger;
 
         }
@@ -22,7 +23,7 @@ namespace NoteTakingAPI.Controllers
         {
             try
             {
-                var eventos = await _eventoRepository.GetAllAsync();
+                var eventos = await _eventoService.GetAllEventos();
                 return Ok(eventos);
             }
             catch (Exception ex)
@@ -33,11 +34,11 @@ namespace NoteTakingAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Evento>> GetById(int id)
+        public async Task<ActionResult<Evento>> GetById([FromRoute] int id)
         {
             try
             {
-                var evento = await _eventoRepository.GetByIdAsync(id);
+                var evento = await _eventoService.GetEventoByIdAsync(id);
                 if (evento == null) return NotFound();
                 return Ok(evento);
             }
@@ -49,7 +50,7 @@ namespace NoteTakingAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Evento>> InsertOrUpdate(Evento evento)
+        public async Task<ActionResult<Evento>> InsertOrUpdate([FromBody] Evento evento)
         {
             try
             {
@@ -58,7 +59,7 @@ namespace NoteTakingAPI.Controllers
                     return BadRequest("Titulo é obrigatorio");
                 }
 
-                var retornoEvento = await _eventoRepository.InserOrUpdateAsync(evento);
+                var retornoEvento = await _eventoService.InsertOrUpdateEvento(evento);
                 return CreatedAtAction(nameof(GetById), new { id = retornoEvento.Id }, retornoEvento);
             }
             catch (Exception ex)
@@ -69,11 +70,11 @@ namespace NoteTakingAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
             try
             {
-                await _eventoRepository.DeleteAsync(id);
+                await _eventoService.DeleteEvento(id);
                 return NoContent();
             }
             catch (Exception ex)

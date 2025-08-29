@@ -26,3 +26,4 @@ secrets.json
 
 NoteTakingAPI.csproj
 NoteTakingAPI.csproj.user
+NoteTakingAPI.http
