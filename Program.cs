@@ -3,6 +3,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL;
 using NoteTakingAPI.Core.Interfaces;
 using NoteTakingAPI.Infrastructure.Data;
 using NoteTakingAPI.Infrastructure.Repositories;
+using NoteTakingAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +22,23 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // ✅ Registrar repositórios
 builder.Services.AddScoped<IEventoRepository, EventoRepository>();
 
+builder.Services.AddScoped<EventoService>();
+
+// Habilitar CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200") // URL do Angular
+                  .AllowAnyHeader()
+                  .AllowAnyMethod(); // Aceita GET, POST, PUT, DELETE etc
+        });
+});
+
 var app = builder.Build();
+
+app.UseCors("AllowAngularApp");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
