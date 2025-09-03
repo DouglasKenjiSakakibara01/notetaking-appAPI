@@ -19,8 +19,13 @@ namespace NoteTakingAPI.Infrastructure.Data
             modelBuilder.Entity<Evento>(entity =>
             {
                 entity.HasKey(p => p.Id);
-                entity.Property(p => p.DtCriacao).IsRequired();
-                entity.Property(p => p.Titulo).IsRequired();
+                entity.Property(p => p.Titulo)
+                    .IsRequired()
+                    .HasMaxLength(100);
+                entity.Property(p => p.Descricao)
+                    .HasMaxLength(500);
+                entity.Property(p => p.DtCriacao);
+                entity.Property(p => p.DtEvento);
             });
         }
     }
