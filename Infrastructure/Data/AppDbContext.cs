@@ -12,6 +12,7 @@ namespace NoteTakingAPI.Infrastructure.Data
 
         // DbSet representa uma tabela no banco
         public DbSet<Evento> Eventos { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,6 +27,15 @@ namespace NoteTakingAPI.Infrastructure.Data
                     .HasMaxLength(500);
                 entity.Property(p => p.DtCriacao);
                 entity.Property(p => p.DtEvento);
+            });
+            modelBuilder.Entity<Usuario>(entity =>
+            {
+                entity.HasKey(p => p.Id);
+                entity.HasKey(u => u.Email);
+                entity.HasKey(u => u.Senha);
+                entity.Property(p => p.DtNascimento);
+                entity.Property(p => p.Cpf)
+                      .HasMaxLength(11);
             });
         }
     }

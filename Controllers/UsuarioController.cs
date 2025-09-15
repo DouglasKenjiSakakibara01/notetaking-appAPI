@@ -1,0 +1,56 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using NoteTakingAPI.Core.Entities;
+using NoteTakingAPI.Services;
+
+namespace NoteTakingAPI.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class UsuarioController: ControllerBase
+    {
+        private readonly UsuarioService _usuarioService;
+        private readonly ILogger<UsuarioController> _logger;
+
+        public UsuarioController(UsuarioService usuarioService, ILogger<UsuarioController> logger)
+        {
+            _usuarioService = usuarioService;
+            _logger = logger;
+        }
+
+        [HttpGet("{email}/{senha}")]
+        public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuario([FromRoute] string email, [FromRoute]string senha)
+        {
+            try
+            {
+                var usuario = await _usuarioService.GetUsuarioAsync(email, senha);
+                if (usuario == null) return NotFound();
+
+                return Ok(usuario);
+            }
+            catch (Exception ex) 
+            {
+                _logger.LogError(ex, $"Erro ao buscar usuario {email} - {senha}");
+                return StatusCode(500, "Erro interno do servidor");
+            }
+        }
+        [HttpPost]
+        public async Task<ActionResult<Evento>> Insert([FromBody] Usuario usuario)
+        {
+            try
+            {
+                var retornoUsuario = await _usuarioService.InsertAsync(usuario);
+
+
+                if (!retornoUsuario) return BadRequest();
+
+                return Ok(retornoUsuario);
+            }
+            catch (Exception ex) 
+            {
+
+                _logger.LogError(ex, $"Erro ao inserir usuario");
+                return StatusCode(500, "Erro interno do servidor");
+            }
+        }
+    }
+}

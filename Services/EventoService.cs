@@ -11,7 +11,6 @@ namespace NoteTakingAPI.Services
 
         public EventoService(
             IEventoRepository eventoRepository,
-            AppDbContext context,
             ILogger<EventoService> logger)
         {
             _eventoRepository = eventoRepository;
