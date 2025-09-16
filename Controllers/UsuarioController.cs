@@ -8,6 +8,22 @@ namespace NoteTakingAPI.Controllers
     [Route("api/[controller]")]
     public class UsuarioController: ControllerBase
     {
+        public record UsuarioLoginDTO
+        {
+            public string Email = string.Empty;
+            public string Senha = string.Empty;
+        }
+        public record UsuarioLoginRetornoDTO
+        {
+            public string Email = string.Empty;
+            public string Token = string.Empty;
+
+            public UsuarioLoginRetornoDTO(string email, string token)
+            {
+                this.Email = email;
+                this.Token = token;
+            }
+        }
         private readonly UsuarioService _usuarioService;
         private readonly ILogger<UsuarioController> _logger;
 
@@ -17,19 +33,21 @@ namespace NoteTakingAPI.Controllers
             _logger = logger;
         }
 
-        [HttpGet("{email}/{senha}")]
-        public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuario([FromRoute] string email, [FromRoute]string senha)
+        [HttpPost("login")]
+        public async Task<ActionResult<IEnumerable<Usuario>>> Login([FromBody] UsuarioLoginDTO usuario)
         {
             try
             {
-                var usuario = await _usuarioService.GetUsuarioAsync(email, senha);
-                if (usuario == null) return NotFound();
+                var usuarioExiste = await _usuarioService.GetUsuarioAsync(usuario.Email, usuario.Senha);
+                if (usuarioExiste == null) return Unauthorized("Usuário ou senha inválidos");
 
-                return Ok(usuario);
+                var token = _usuarioService.GerarToken(usuario.Email);
+
+                return Ok(new UsuarioLoginRetornoDTO(usuario.Email, token));
             }
             catch (Exception ex) 
             {
-                _logger.LogError(ex, $"Erro ao buscar usuario {email} - {senha}");
+                _logger.LogError(ex, $"Erro no login");
                 return StatusCode(500, "Erro interno do servidor");
             }
         }

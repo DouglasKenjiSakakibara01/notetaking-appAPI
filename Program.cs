@@ -4,8 +4,32 @@ using NoteTakingAPI.Core.Interfaces;
 using NoteTakingAPI.Infrastructure.Data;
 using NoteTakingAPI.Infrastructure.Repositories;
 using NoteTakingAPI.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// configuração JWT
+var key = builder.Configuration["Jwt:Key"];
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(x =>
+{
+    x.RequireHttpsMetadata = false;
+    x.SaveToken = true;
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+});
+
 
 // Add services to the container.
 
@@ -24,8 +48,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // ✅ Registrar repositórios
 builder.Services.AddScoped<IEventoRepository, EventoRepository>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
 builder.Services.AddScoped<EventoService>();
+builder.Services.AddScoped<UsuarioService>();
 
 // Habilitar CORS
 builder.Services.AddCors(options =>

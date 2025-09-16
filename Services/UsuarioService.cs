@@ -1,5 +1,10 @@
-﻿using NoteTakingAPI.Core.Entities;
+﻿using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using NoteTakingAPI.Core.Entities;
 using NoteTakingAPI.Core.Interfaces;
+using Microsoft.Extensions.Configuration;
 
 namespace NoteTakingAPI.Services
 {
@@ -7,13 +12,16 @@ namespace NoteTakingAPI.Services
     {
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly ILogger<EventoService> _logger;
+        private readonly IConfiguration _configuration;
 
         public UsuarioService(
             IUsuarioRepository usuarioRepository, 
-            ILogger<EventoService> logger)
+            ILogger<EventoService> logger,
+            IConfiguration configuration)
         {
             _usuarioRepository = usuarioRepository;
             _logger = logger;
+            _configuration = configuration;
         }
 
         public async Task<Usuario?> GetUsuarioAsync(string email, string senha)
@@ -33,6 +41,27 @@ namespace NoteTakingAPI.Services
             var novoUsuario = await _usuarioRepository.InsertAsync(usuario);
 
             return novoUsuario;
+        }
+
+        public string GerarToken(string email)
+        {
+            var key = _configuration["Jwt:Key"];
+            var keyBytes = Encoding.UTF8.GetBytes(key);
+
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Name, email)
+            };
+
+            var credenciais = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(1),
+                signingCredentials: credenciais
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
     }
