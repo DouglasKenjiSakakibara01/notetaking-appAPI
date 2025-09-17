@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NoteTakingAPI.Infrastructure.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace NoteTakingAPI.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250917015836_CorrecaoId")]
+    partial class CorrecaoId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,9 +56,8 @@ namespace NoteTakingAPI.Infrastructure.Migrations
 
             modelBuilder.Entity("NoteTakingAPI.Core.Entities.Usuario", b =>
                 {
-                    b.Property<string>("Email")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                    b.Property<string>("Senha")
+                        .HasColumnType("text");
 
                     b.Property<string>("Cpf")
                         .HasMaxLength(11)
@@ -63,6 +65,10 @@ namespace NoteTakingAPI.Infrastructure.Migrations
 
                     b.Property<DateTime>("DtNascimento")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -74,11 +80,7 @@ namespace NoteTakingAPI.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<string>("Senha")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Email");
+                    b.HasKey("Senha");
 
                     b.ToTable("Usuarios");
                 });

@@ -20,6 +20,8 @@ namespace NoteTakingAPI.Infrastructure.Data
             modelBuilder.Entity<Evento>(entity =>
             {
                 entity.HasKey(p => p.Id);
+                entity.Property(p => p.Id)
+                                .ValueGeneratedOnAdd();
                 entity.Property(p => p.Titulo)
                     .IsRequired()
                     .HasMaxLength(100);
@@ -30,11 +32,13 @@ namespace NoteTakingAPI.Infrastructure.Data
             });
             modelBuilder.Entity<Usuario>(entity =>
             {
-                entity.HasKey(p => p.Id);
+                entity.HasKey(u => u.Id);
+                entity.Property(u => u.Id)
+                                .ValueGeneratedOnAdd();
                 entity.HasKey(u => u.Email);
-                entity.HasKey(u => u.Senha);
-                entity.Property(p => p.DtNascimento);
-                entity.Property(p => p.Cpf)
+                entity.Property(u => u.Senha);
+                entity.Property(u => u.DtNascimento);
+                entity.Property(u => u.Cpf)
                       .HasMaxLength(11);
             });
         }
