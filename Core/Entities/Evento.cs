@@ -6,7 +6,6 @@ namespace NoteTakingAPI.Core.Entities
     public class Evento
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]

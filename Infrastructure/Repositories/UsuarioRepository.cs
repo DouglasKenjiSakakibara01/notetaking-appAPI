@@ -16,13 +16,13 @@ namespace NoteTakingAPI.Infrastructure.Repositories
 
         public async Task<Usuario?> GetUsuarioAsync(string email, string senha)
         {
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email 
-                                                                        && u.Senha == senha);
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
 
             if (usuario == null) return usuario;
 
+            bool senhaExiste = BCrypt.Net.BCrypt.Verify(senha, usuario.Senha);
 
-            return usuario;
+            return senhaExiste ? usuario : null;
         }
 
         public async Task<Boolean> InsertAsync(Usuario usuario)
@@ -33,6 +33,7 @@ namespace NoteTakingAPI.Infrastructure.Repositories
 
             if (usuarioExiste == null)
             {
+                usuario.Senha = BCrypt.Net.BCrypt.HashPassword(usuario.Senha);
                 await _context.AddAsync(usuario);
                 await _context.SaveChangesAsync();
                 return true;
