@@ -20,7 +20,7 @@ namespace NoteTakingAPI.Core.Entities
         [Required]
         public DateTime DtNascimento { get; set; } = new DateTime();
         [Required]
-        public string Senha = string.Empty;
+        public string Senha { get; set; } = string.Empty;
 
 
 

@@ -22,6 +22,7 @@ namespace NoteTakingAPI.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult<Evento>> Insert([FromBody] Usuario usuario)
         {
             try

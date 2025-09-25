@@ -56,6 +56,7 @@ builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
 builder.Services.AddScoped<EventoService>();
 builder.Services.AddScoped<UsuarioService>();
+builder.Services.AddScoped<AuthService>();
 
 // Habilitar CORS
 builder.Services.AddCors(options =>
