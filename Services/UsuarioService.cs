@@ -24,45 +24,13 @@ namespace NoteTakingAPI.Services
             _configuration = configuration;
         }
 
-        public async Task<Usuario?> GetUsuarioAsync(string email, string senha)
-        {
-            var usuario = await _usuarioRepository.GetUsuarioAsync(email, senha);
-
-            if (usuario == null)
-            {
-                _logger.LogWarning("Usuário não encontrado");
-            }
-
-            return usuario;
-        }
 
         public async Task<Boolean> InsertAsync(Usuario usuario)
         {
             var novoUsuario = await _usuarioRepository.InsertAsync(usuario);
 
             return novoUsuario;
-        }
-
-        public string GerarToken(string email)
-        {
-            var key = _configuration["Jwt:Key"];
-            var keyBytes = Encoding.UTF8.GetBytes(key);
-
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.Name, email)
-            };
-
-            var credenciais = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.UtcNow.AddHours(1),
-                signingCredentials: credenciais
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
+        }        
 
     }
 }

@@ -28,6 +28,10 @@ builder.Services.AddAuthentication(x =>
         ValidateIssuer = false,
         ValidateAudience = false
     };
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateLifetime = true
+    };
 });
 
 
@@ -66,6 +70,9 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseCors("AllowAngularApp");
 
