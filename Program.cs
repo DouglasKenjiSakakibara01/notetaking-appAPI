@@ -26,10 +26,7 @@ builder.Services.AddAuthentication(x =>
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
         ValidateIssuer = false,
-        ValidateAudience = false
-    };
-    x.TokenValidationParameters = new TokenValidationParameters
-    {
+        ValidateAudience = false,
         ValidateLifetime = true
     };
 });
@@ -66,16 +63,18 @@ builder.Services.AddCors(options =>
         {
             policy.WithOrigins("http://localhost:4200") // URL do Angular
                   .AllowAnyHeader()
-                  .AllowAnyMethod(); // Aceita GET, POST, PUT, DELETE etc
+                  .AllowAnyMethod() // Aceita GET, POST, PUT, DELETE etc
+                  .AllowCredentials();
         });
 });
 
 var app = builder.Build();
 
+app.UseCors("AllowAngularApp");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseCors("AllowAngularApp");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -85,8 +84,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 
